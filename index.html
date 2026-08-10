@@ -8,10 +8,46 @@
     <link rel="stylesheet" href="./src/output.css">
 </head>
 
-<body>
-    <h1 class="text-3xl font-bold underline">
-        Hello world!
-    </h1>
+<body class="bg-black">
+    <div class="flex p-2 gap-2">
+        <div id="left" class="border w-[24vw] p-2 flex flex-col gap-3">
+            <div class="rounded-xl bg-[#121212] p-4" id="home">
+                <div id="logo" class="text-3xl font-black pl-4 text-white">Melodify</div>
+                <ul class="mt-4 p-4 text-white font-bold">
+                    <li class="flex items-center gap-2.5 h-7 text-base mb-2"><img src="./svg/home.svg" alt="home"
+                            class="w-6.5">Home</li>
+                    <li class="flex items-center gap-2.5 h-7 text-base"><img src="./svg/search.svg" alt="search"
+                            class="w-6.5">Search</li>
+                </ul>
+            </div>
+            <div class="bg-[#121212] p-2 rounded-xl min-h-[70vh] flex flex-col relative" id="library">
+                <div class="flex items-center p-2 gap-3">
+                    <img src="./svg/playlist.svg" alt="playlist" class="w-8">
+                    <h2 class="text-white text-lg font-bold">Your Library</h2>
+                </div>
+                <div id="left-sidebar-footer" class="absolute bottom-2 ">
+                    <footer>
+                        <div>
+                            <ul class="text-gray-400 flex flex-row flex-wrap items-center justify-center gap-1.5 font-light text-sm">
+                                <li><a href="#">Legal</a></li>
+                                <li><a href="#">Safety Privacy </a></li>
+                                <li><a href="#">Privacy Policy</a></li>
+                                <li><a href="#">Cookies</a></li>
+                                <li><a href="#">About Ads</a></li>
+                                <li><a href="#">Accessibility</a></li>
+                            </ul>
+                        </div>
+                    </footer>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Side -->
+        <div id="right" class="">
+            
+        </div>
+    </div>
 </body>
 
 </html>
