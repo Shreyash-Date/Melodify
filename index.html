@@ -45,7 +45,7 @@
         </div>
 
         <!-- Right Side -->
-        <div id="right" class="rounded-xl bg-[#121212] w-[75vw] m-2 ">
+        <div id="right" class="rounded-xl bg-[#121212] w-[75vw] m-2 relative">
             <header class="h-14 bg-[#191919] rounded-t-xl flex justify-end items-center pr-5">
                 <div class="flex gap-2" id="nav">
                     <button class="w-25 h-9 text-white font-semibold cursor-pointer border rounded-xl">Sign Up</button>
@@ -64,7 +64,15 @@
                     </div>
                 </div>
             </div>
-
+            <div id="play" class="absolute bottom-0">
+                <div class="bg-white w-[73vw] rounded-b-2xl h-13 flex justify-center">
+                    <div class="flex size-11 cursor-pointer m-1">
+                        <img src="./svg/previous.svg" alt="previous">
+                        <img src="./svg/play.svg" alt="play">
+                        <img src="./svg/next.svg" alt="next">
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </body>
