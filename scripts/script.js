@@ -22,8 +22,27 @@ async function main() {
     // Displayed Song on the web screen
     let songsList = document.getElementById('songList').getElementsByTagName('ul')[0];
     for (const song of songs) {
-        songsList.innerHTML = songsList.innerHTML + `<li> ${song.replace(/-no\d+-.*\.mp3$/, "").replaceAll("-", " ").replace("free", " ").replace("neffex", " ").replace("copyright", " ")}</li>`;
+        // songsList.innerHTML = songsList.innerHTML + `<li> ${song.replace(/-no\d+-.*\.mp3$/, "").replaceAll("-", " ").replace("free", " ").replace("neffex", " ").replace("copyright", " ")}</li>`;
+
+        let songName = song
+        .replace(/-no\d+-.*\.mp3$/, "")
+        .replaceAll("-", " ")
+        .replace("free", "")
+        .replace("neffex", "")
+        .replace("copyright", "");
+
+    songsList.innerHTML += `
+        <li class="flex justify-between gap-3 items-center border p-2 rounded-xl">
+            <div class="flex gap-3.5">
+                <img src="./svg/musicNote.svg" alt="musicNote" class="h-7">
+                <div>${songName}</div>
+            </div>
+            <img src="./svg/play.svg" alt="play" class="invert h-7">
+        </li>
+    `;
     }
+
+    
 
     let audio = new Audio(songs[0]);
     // audio.play();
