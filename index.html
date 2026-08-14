@@ -73,18 +73,23 @@
                     </div>
                 </div>
             </div>
-            <div id="play" class="absolute bottom-0">
-                <div class="bg-white w-[73vw] rounded-b-2xl h-13 flex justify-center">
-                    <div class="flex size-11 cursor-pointer m-1">
-                        <img src="./svg/previous.svg" alt="previous">
-                        <img src="./svg/play.svg" alt="play">
-                        <img src="./svg/next.svg" alt="next">
+
+            <!-- Play bar -->
+            <div id="playbar" class="absolute bottom-0">
+                <div id="seekbar" class="w-[72vw] h-1 absolute bottom-0 m-2 border border-white ">
+                    <div id="circle" class="h-3 w-3 bg-white rounded-full absolute top-1/2 -translate-y-1/2 left-0 transition-[left] duration-500"></div>
+                </div>
+                <div class="bg-[#212121] w-[73vw] rounded-b-2xl h-15 flex justify-center">
+                    <div class="flex cursor-pointer">
+                        <button class="cursor-pointer invert" id="previous-btn"><img src="./svg/previous.svg" alt="previous" class="h-9"></button>
+                        <button class="cursor-pointer invert" id="play-btn"><img src="./svg/play.svg" alt="play" class="h-9"></button>
+                        <button class="cursor-pointer invert" id="next-btn"> <img src="./svg/next.svg" alt="next" class="h-9"></button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <script src="./scripts/script.js"></script>
 </body>
-<script src="scripts/script.js"></script>
 
 </html>

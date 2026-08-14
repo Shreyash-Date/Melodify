@@ -16,8 +16,14 @@ async function getSongs() {
     return songs;
 }
 
+let audio;
+
 async function main() {
-    let songs = await getSongs();    
+    let songs = await getSongs();
+    const previousBtn = document.getElementById('previous-btn');
+    const playBtn = document.getElementById('play-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const seekBar = document.getElementById('seekBar');
 
     // Displayed Song on the web screen
     let songsList = document.getElementById('songList').getElementsByTagName('ul')[0];
@@ -25,14 +31,14 @@ async function main() {
         // songsList.innerHTML = songsList.innerHTML + `<li> ${song.replace(/-no\d+-.*\.mp3$/, "").replaceAll("-", " ").replace("free", " ").replace("neffex", " ").replace("copyright", " ")}</li>`;
 
         let songName = song
-        .replace(/-no\d+-.*\.mp3$/, "")
-        .replaceAll("-", " ")
-        .replace("free", "")
-        .replace("neffex", "")
-        .replace("copyright", "");
+            .replace(/-no\d+-.*\.mp3$/, "")
+            .replaceAll("-", " ")
+            .replace("free", "")
+            .replace("neffex", "")
+            .replace("copyright", "");
 
-    songsList.innerHTML += `
-        <li class="flex justify-between gap-3 items-center border p-2 rounded-xl">
+        songsList.innerHTML += `
+        <li class="flex justify-between gap-3 items-center border-2 border-gray-500/30 p-2 rounded-xl">
             <div class="flex gap-3.5">
                 <img src="./svg/musicNote.svg" alt="musicNote" class="h-7">
                 <div>${songName}</div>
@@ -42,14 +48,17 @@ async function main() {
     `;
     }
 
-    
 
-    let audio = new Audio(songs[0]);
+
+    audio = new Audio(`songs/${songs[0]}`);
     // audio.play();
 
-    audio.addEventListener("loadeddata", () =>{
+    audio.addEventListener("loadeddata", () => {
         let duration = audio.duration;
         console.log(audio.duration, audio.currentSrc, audio.currentTime);
     });
+
 }
+
 main();
+
