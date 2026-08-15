@@ -29,11 +29,15 @@ async function getSongs() {
     return songs;
 }
 
-const playMusic = (track) => {
+const playMusic = (track, pause = false) => {
     currentSong.src = "/songs/" + track;
-    currentSong.play();
+    
+    if(!pause){
+        currentSong.play();
+        icon.src = './svg/pause.svg';
 
-    icon.src = './svg/pause.svg';
+    }
+
 
     document.getElementById('songInfo').innerText =
         formatSongName(track);
@@ -44,11 +48,12 @@ const playMusic = (track) => {
 
 async function main() {
     let songs = await getSongs();
+    playMusic(songs[0], true);
 
     const previousBtn = document.getElementById('previous-btn');
     const playBtn = document.getElementById('play-btn');
     const nextBtn = document.getElementById('next-btn');
-    const seekBar = document.getElementById('seekBar');
+    const seekBar = document.getElementById('seekbar');
 
     icon = playBtn.querySelector('img');
 
@@ -108,6 +113,22 @@ async function main() {
 
     document.getElementById("songTime").innerText =
         `${currentMinutes}:${currentSeconds} / ${durationMinutes}:${durationSeconds}`;
+
+    // Update seekbar position
+    document.getElementById('circle').style.left =
+        (currentSong.currentTime / currentSong.duration) * 100 + "%";
+});
+
+
+// Seekbar click
+seekBar.addEventListener('click', (e) => {
+    let percentage =
+        (e.offsetX / e.target.getBoundingClientRect().width) * 100;
+
+    document.getElementById('circle').style.left = percentage + "%";
+
+    currentSong.currentTime =
+        (currentSong.duration * percentage) / 100;
 });
 }
 
