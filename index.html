@@ -1,108 +1,16 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Melodify — A sleek, modern music player built with React" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <title>Melodify</title>
-    <link rel="stylesheet" href="./src/output.css">
-</head>
-
-<body class="bg-black">
-    <!-- Left Side -->
-    <div class="flex p-2 gap-2">
-        <div id="left" class="border w-[24vw] p-2 flex flex-col gap-3">
-            <div class="rounded-xl bg-[#121212] p-4" id="home">
-                <div id="logo" class="text-3xl font-black pl-4 text-white">Melodify</div>
-                <ul class="mt-4 p-4 text-white font-bold">
-                    <li class="flex items-center gap-2.5 h-7 text-base mb-2"><img src="./svg/home.svg" alt="home"
-                            class="w-6.5">Home</li>
-                    <li class="flex items-center gap-2.5 h-7 text-base"><img src="./svg/search.svg" alt="search"
-                            class="w-6.5">Search</li>
-                </ul>
-            </div>
-            <div class="bg-[#121212] p-2 rounded-xl min-h-[70vh] flex flex-col relative" id="library">
-                <div class="flex items-center p-2 gap-3">
-                    <img src="./svg/playlist.svg" alt="playlist" class="w-8">
-                    <h2 class="text-white text-lg font-bold">Your Library</h2>
-
-                </div>
-
-                <div id="songList" class="h-[31vh] overflow-auto scrollbar-thumb-gray-500">
-                    <ul class="text-white list-decimal m-5 flex flex-col gap-2">
-                        <!-- li generated using js -->
-                    </ul>
-                </div>
-
-                <div id="left-sidebar-footer" class="absolute bottom-2 ">
-                    <footer>
-                        <div>
-                            <ul
-                                class="text-gray-400 flex flex-row flex-wrap items-center justify-center gap-1.5 font-light text-sm">
-                                <li><a href="#">Legal</a></li>
-                                <li><a href="#">Safety Privacy </a></li>
-                                <li><a href="#">Privacy Policy</a></li>
-                                <li><a href="#">Cookies</a></li>
-                                <li><a href="#">About Ads</a></li>
-                                <li><a href="#">Accessibility</a></li>
-                            </ul>
-                        </div>
-                    </footer>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Right Side -->
-        <div id="right" class="rounded-xl bg-[#121212] w-[75vw] m-2 relative">
-            <header class="h-14 bg-[#191919] rounded-t-xl flex justify-end items-center pr-5">
-                <div class="flex gap-2" id="nav">
-                    <button class="w-25 h-9 text-white font-semibold cursor-pointer border rounded-xl">Sign Up</button>
-                    <button class="w-25 h-9 bg-white font-semibold cursor-pointer rounded-xl">Log In</button>
-                </div>
-            </header>
-            <div class="p-3">
-                <div>
-                    <h2 class="text-white text-3xl font-black underline">Playlist</h2>
-                </div>
-                <div class="flex flex-wrap m-5">
-                    <div
-                        class="p-2 flex flex-col gap-3 w-fit bg-[#1b1a1a] rounded-2xl hover:bg-[#262424] cursor-pointer">
-                        <img src="./images/top50.png" alt="top50" class="w-55 rounded-2xl">
-                        <p class="text-white font-bold text-lg ml-2">Top-50 Songs</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Play bar -->
-            <div id="playbar" class="absolute bottom-0 w-[73vw] bg-[#212121] rounded-b-2xl h-15">
-                <div id="seekbar" class="w-[72vw] h-1 absolute bottom-0 m-2 border border-white bg-white cursor-pointer rounded-2xl">
-                    <div id="circle"
-                        class="h-3 w-3 bg-white rounded-full absolute top-1/2 -translate-y-1/2 left-0 transition-[left] duration-500">
-                    </div>
-                </div>
-                <div class="text-white flex justify-between m-2 mx-7">
-                    <div id="songInfo" class="text-lg font-semibold">
-                        song Name
-                    </div>
-
-                    <div class="flex cursor-pointer">
-                        <button class="cursor-pointer invert" id="previous-btn"><img src="./svg/previous.svg"
-                                alt="previous" class="h-9"></button>
-                        <button class="cursor-pointer invert" id="play-btn"><img src="./svg/play.svg" alt="play"
-                                class="h-9"></button>
-                        <button class="cursor-pointer invert" id="next-btn"> <img src="./svg/next.svg" alt="next"
-                                class="h-9"></button>
-                    </div>
-
-                    <div id="songTime" class="text-lg font-semibold"> 
-                        00:00 | 00:00
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script src="./scripts/script.js"></script>
-</body>
-
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
