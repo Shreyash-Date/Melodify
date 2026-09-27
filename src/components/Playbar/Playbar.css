@@ -1,0 +1,148 @@
+.playbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--playbar-height);
+  background: var(--bg-playbar);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-xl);
+  z-index: 100;
+}
+
+/* ---- Song Info (Left) ---- */
+.playbar__song-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  min-width: 200px;
+  max-width: 280px;
+}
+
+.playbar__song-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-active);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.playbar__song-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.playbar__song-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.playbar__song-name {
+  font-size: var(--font-sm);
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.playbar__song-artist {
+  font-size: var(--font-xs);
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- Controls (Center) ---- */
+.playbar__controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  flex: 1;
+  max-width: 600px;
+}
+
+.playbar__buttons {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.playbar__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  transition: all var(--transition-fast);
+}
+
+.playbar__btn:hover {
+  color: var(--text-primary);
+  transform: scale(1.1);
+}
+
+.playbar__btn--play {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--text-primary);
+  color: var(--bg-darkest);
+  font-size: 1rem;
+  padding-left: 2px;
+}
+
+.playbar__btn--play:hover {
+  transform: scale(1.08);
+  background: var(--accent);
+  color: var(--bg-darkest);
+}
+
+/* ---- Seekbar ---- */
+.playbar__seekbar-container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  width: 100%;
+}
+
+.playbar__seekbar {
+  flex: 1;
+  height: 4px;
+}
+
+.playbar__time {
+  font-size: var(--font-xs);
+  color: var(--text-muted);
+  min-width: 35px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Volume (Right) ---- */
+.playbar__volume {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  min-width: 160px;
+  justify-content: flex-end;
+}
+
+.playbar__volume-icon {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.playbar__volume-slider {
+  width: 100px;
+}

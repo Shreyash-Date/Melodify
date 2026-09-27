@@ -1,10 +1,14 @@
+import Sidebar from './components/Sidebar/Sidebar'
+import MainContent from './components/MainContent/MainContent'
+import Playbar from './components/Playbar/Playbar'
 import './App.css'
 
 function App() {
   return (
     <div className="app">
-      <h1>Melodify</h1>
-      <p>React + Vite setup complete</p>
+      <Sidebar />
+      <MainContent />
+      <Playbar />
     </div>
   )
 }
