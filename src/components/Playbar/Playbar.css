@@ -1,3 +1,7 @@
+/* ============================================
+   PLAYBAR — Fixed Bottom Audio Controls
+   ============================================ */
+
 .playbar {
   position: fixed;
   bottom: 0;
@@ -29,6 +33,11 @@
   background: var(--bg-active);
   flex-shrink: 0;
   overflow: hidden;
+  transition: transform var(--transition-base);
+}
+
+.playbar__song-thumb:hover {
+  transform: scale(1.05);
 }
 
 .playbar__song-thumb img {
@@ -51,6 +60,13 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: color var(--transition-fast);
+}
+
+.playbar__song-name:hover {
+  color: #fff;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .playbar__song-artist {
@@ -59,6 +75,13 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: color var(--transition-fast);
+}
+
+.playbar__song-artist:hover {
+  color: var(--text-secondary);
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 /* ---- Controls (Center) ---- */
@@ -99,12 +122,17 @@
   color: var(--bg-darkest);
   font-size: 1rem;
   padding-left: 2px;
+  transition: all var(--transition-fast);
 }
 
 .playbar__btn--play:hover {
   transform: scale(1.08);
   background: var(--accent);
   color: var(--bg-darkest);
+}
+
+.playbar__btn--play:active {
+  transform: scale(0.95);
 }
 
 /* ---- Seekbar ---- */
@@ -137,12 +165,90 @@
   justify-content: flex-end;
 }
 
+.playbar__volume-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition-fast);
+}
+
+.playbar__volume-btn:hover .playbar__volume-icon {
+  color: var(--text-primary);
+}
+
 .playbar__volume-icon {
   font-size: 1.1rem;
   color: var(--text-secondary);
   flex-shrink: 0;
+  transition: color var(--transition-fast);
 }
 
 .playbar__volume-slider {
   width: 100px;
+}
+
+/* ============================================
+   RANGE SLIDER — Fill Progress (via --fill CSS var)
+   ============================================ */
+
+/* Webkit (Chrome / Edge / Safari) */
+.playbar__seekbar::-webkit-slider-runnable-track,
+.playbar__volume-slider::-webkit-slider-runnable-track {
+  background: linear-gradient(
+    to right,
+    var(--text-secondary) 0%,
+    var(--text-secondary) var(--fill, 0%),
+    var(--bg-active) var(--fill, 0%),
+    var(--bg-active) 100%
+  );
+}
+
+.playbar__seekbar:hover::-webkit-slider-runnable-track,
+.playbar__volume-slider:hover::-webkit-slider-runnable-track {
+  background: linear-gradient(
+    to right,
+    #fff 0%,
+    #fff var(--fill, 0%),
+    var(--bg-active) var(--fill, 0%),
+    var(--bg-active) 100%
+  );
+}
+
+/* Firefox */
+.playbar__seekbar::-moz-range-track,
+.playbar__volume-slider::-moz-range-track {
+  background: linear-gradient(
+    to right,
+    var(--text-secondary) 0%,
+    var(--text-secondary) var(--fill, 0%),
+    var(--bg-active) var(--fill, 0%),
+    var(--bg-active) 100%
+  );
+}
+
+.playbar__seekbar:hover::-moz-range-track,
+.playbar__volume-slider:hover::-moz-range-track {
+  background: linear-gradient(
+    to right,
+    #fff 0%,
+    #fff var(--fill, 0%),
+    var(--bg-active) var(--fill, 0%),
+    var(--bg-active) 100%
+  );
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 700px) {
+  .playbar__song-info {
+    min-width: 120px;
+    max-width: 160px;
+  }
+
+  .playbar__volume {
+    min-width: auto;
+  }
+
+  .playbar__volume-slider {
+    display: none;
+  }
 }
