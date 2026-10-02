@@ -313,12 +313,66 @@
 
 .song-list__play-icon {
   color: var(--text-primary);
+  font-size: 1rem;
   animation: fadeIn 150ms ease;
 }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: scale(0.85); }
   to   { opacity: 1; transform: scale(1); }
+}
+
+/* ---- Active Song Row ---- */
+.song-list__row--active {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.song-list__row--active:hover {
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.song-list__row-number--active {
+  color: var(--text-primary);
+}
+
+.song-list__song-title--active {
+  color: #a8d8ff;
+}
+
+/* ---- Equalizer Animation (playing indicator) ---- */
+.song-list__equalizer {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+}
+
+.song-list__eq-bar {
+  display: block;
+  width: 3px;
+  border-radius: 1.5px;
+  background: #a8d8ff;
+  animation: eqBounce 0.8s ease-in-out infinite alternate;
+}
+
+.song-list__eq-bar:nth-child(1) {
+  height: 60%;
+  animation-delay: 0s;
+}
+
+.song-list__eq-bar:nth-child(2) {
+  height: 100%;
+  animation-delay: 0.2s;
+}
+
+.song-list__eq-bar:nth-child(3) {
+  height: 40%;
+  animation-delay: 0.4s;
+}
+
+@keyframes eqBounce {
+  0%   { height: 30%; }
+  100% { height: 100%; }
 }
 
 /* Title column (cover + text) */
