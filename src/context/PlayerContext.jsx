@@ -1,5 +1,14 @@
 import { createContext, useContext, useState, useRef, useEffect, useCallback } from 'react'
-import songs from '../data/songs'
+import {
+  fetchChartAlbums,
+  fetchChartPlaylists,
+  fetchChartTracks,
+  fetchAlbumTracks,
+  fetchPlaylistTracks,
+  searchTracks,
+  searchAlbums,
+} from '../services/deezerApi'
+import fallbackSongs from '../data/songs'
 
 const PlayerContext = createContext(null)
 
@@ -12,7 +21,27 @@ export function fmtTime(sec) {
 }
 
 export function PlayerProvider({ children }) {
-  /* ---- state ---- */
+  /* ===========================================
+     BROWSE STATE
+     =========================================== */
+  const [view, setView] = useState('home')          // 'home' | 'detail' | 'search'
+  const [albums, setAlbums] = useState([])           // browse cards
+  const [playlists, setPlaylists] = useState([])     // browse cards
+  const [isBrowseLoading, setIsBrowseLoading] = useState(true)
+
+  // Detail view state
+  const [detailInfo, setDetailInfo] = useState(null) // { title, artist, cover, ... }
+  const [isDetailLoading, setIsDetailLoading] = useState(false)
+
+  // Search state
+  const [searchResults, setSearchResults] = useState({ tracks: [], albums: [] })
+  const [isSearchLoading, setIsSearchLoading] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+
+  /* ===========================================
+     PLAYER STATE
+     =========================================== */
+  const [songs, setSongs] = useState([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
@@ -21,12 +50,111 @@ export function PlayerProvider({ children }) {
   const [isMuted, setIsMuted] = useState(false)
 
   const audioRef = useRef(null)
-  // Track whether user has ever initiated playback (for auto-play on track change)
   const hasPlayedRef = useRef(false)
 
-  const song = songs[currentIndex]
+  const song = songs[currentIndex] || {
+    id: 0, title: 'Melodify', artist: 'Select a song',
+    album: '', cover: '/images/melodify-logo.jpg',
+    coverLarge: '/images/melodify-logo.jpg', src: '', duration: '0:00',
+  }
 
-  /* ---- control functions ---- */
+  /* ===========================================
+     FETCH BROWSE DATA ON MOUNT
+     =========================================== */
+  useEffect(() => {
+    let cancelled = false
+    async function loadBrowse() {
+      try {
+        setIsBrowseLoading(true)
+        const [albumsData, playlistsData] = await Promise.all([
+          fetchChartAlbums(10),
+          fetchChartPlaylists(10),
+        ])
+        if (!cancelled) {
+          setAlbums(albumsData)
+          setPlaylists(playlistsData)
+        }
+      } catch (err) {
+        console.warn('Failed to load browse data:', err)
+      } finally {
+        if (!cancelled) setIsBrowseLoading(false)
+      }
+    }
+    loadBrowse()
+    return () => { cancelled = true }
+  }, [])
+
+  /* ===========================================
+     NAVIGATION ACTIONS
+     =========================================== */
+
+  /** Open an album or playlist → fetch its tracks and show detail view */
+  const openCollection = useCallback(async (item) => {
+    try {
+      setIsDetailLoading(true)
+      setView('detail')
+
+      let result
+      if (item.type === 'album') {
+        result = await fetchAlbumTracks(item.id)
+      } else {
+        result = await fetchPlaylistTracks(item.id)
+      }
+
+      setDetailInfo(result.info)
+      setSongs(result.tracks)
+      setCurrentIndex(0)
+      setIsPlaying(false)
+      setCurrentTime(0)
+      hasPlayedRef.current = false
+    } catch (err) {
+      console.warn('Failed to load collection:', err)
+      // Stay on detail view but show error state
+      setDetailInfo({ title: 'Error', artist: '', cover: '/images/melodify-logo.jpg' })
+      setSongs([])
+    } finally {
+      setIsDetailLoading(false)
+    }
+  }, [])
+
+  /** Go back to the home browse view */
+  const goHome = useCallback(() => {
+    setView('home')
+    setDetailInfo(null)
+    setSearchQuery('')
+  }, [])
+
+  /** Search tracks and albums */
+  const search = useCallback(async (query) => {
+    if (!query.trim()) return
+    try {
+      setSearchQuery(query)
+      setIsSearchLoading(true)
+      setView('search')
+      const [tracks, albumResults] = await Promise.all([
+        searchTracks(query, 20),
+        searchAlbums(query, 10),
+      ])
+      setSearchResults({ tracks, albums: albumResults })
+    } catch (err) {
+      console.warn('Search failed:', err)
+    } finally {
+      setIsSearchLoading(false)
+    }
+  }, [])
+
+  /** Play search results as a collection */
+  const playSearchResults = useCallback(() => {
+    if (searchResults.tracks.length > 0) {
+      setSongs(searchResults.tracks)
+      setCurrentIndex(0)
+      hasPlayedRef.current = true
+    }
+  }, [searchResults.tracks])
+
+  /* ===========================================
+     PLAYER CONTROLS
+     =========================================== */
   const play = useCallback(() => {
     audioRef.current?.play().catch(() => {})
     setIsPlaying(true)
@@ -43,64 +171,58 @@ export function PlayerProvider({ children }) {
   }, [isPlaying, play, pause])
 
   const playPrev = useCallback(() => {
-    // If more than 3s into the song, restart it; otherwise go previous
     if (audioRef.current && audioRef.current.currentTime > 3) {
       audioRef.current.currentTime = 0
       return
     }
     setCurrentIndex((i) => (i === 0 ? songs.length - 1 : i - 1))
-  }, [])
+  }, [songs.length])
 
   const playNext = useCallback(() => {
     setCurrentIndex((i) => (i === songs.length - 1 ? 0 : i + 1))
-  }, [])
+  }, [songs.length])
 
-  /** Play a specific song by its index in the songs array */
   const playSong = useCallback((index) => {
     if (index < 0 || index >= songs.length) return
     if (index === currentIndex) {
-      // Same song — just toggle
       isPlaying ? pause() : play()
     } else {
       setCurrentIndex(index)
-      hasPlayedRef.current = true // ensure auto-play on load
+      hasPlayedRef.current = true
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentIndex, isPlaying, play, pause])
+  }, [currentIndex, isPlaying, play, pause, songs.length])
 
-  /* ---- side-effects ---- */
+  /** Play a specific track from search results (set songs + play) */
+  const playTrackFromList = useCallback((tracks, index) => {
+    setSongs(tracks)
+    setCurrentIndex(index)
+    hasPlayedRef.current = true
+  }, [])
 
-  // When currentIndex changes, load & play the new song
+  /* ===========================================
+     SIDE-EFFECTS
+     =========================================== */
   useEffect(() => {
     const audio = audioRef.current
-    if (!audio) return
+    if (!audio || !song.src) return
     audio.load()
     if (hasPlayedRef.current) {
       audio.play().catch(() => {})
       setIsPlaying(true)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentIndex])
+  }, [currentIndex, song.src])
 
-  // Keep volume in sync
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = isMuted ? 0 : volume / 100
     }
   }, [volume, isMuted])
 
-  /* ---- audio event handlers ---- */
-  const onTimeUpdate = () => {
-    setCurrentTime(audioRef.current?.currentTime ?? 0)
-  }
-
-  const onLoadedMetadata = () => {
-    setDuration(audioRef.current?.duration ?? 0)
-  }
-
-  const onEnded = () => {
-    playNext()
-  }
+  const onTimeUpdate = () => setCurrentTime(audioRef.current?.currentTime ?? 0)
+  const onLoadedMetadata = () => setDuration(audioRef.current?.duration ?? 0)
+  const onEnded = () => playNext()
 
   const onSeek = (val) => {
     if (audioRef.current && duration) {
@@ -114,41 +236,31 @@ export function PlayerProvider({ children }) {
     if (isMuted && val > 0) setIsMuted(false)
   }
 
-  const toggleMute = () => {
-    setIsMuted((m) => !m)
-  }
+  const toggleMute = () => setIsMuted((m) => !m)
 
-  /* ---- derived values ---- */
+  /* ---- derived ---- */
   const seekPercent = duration ? (currentTime / duration) * 100 : 0
   const volPercent = isMuted ? 0 : volume
 
   const value = {
-    // state
-    currentIndex,
-    isPlaying,
-    currentTime,
-    duration,
-    volume,
-    isMuted,
-    song,
-    songs,
-    seekPercent,
-    volPercent,
-    // controls
-    play,
-    pause,
-    togglePlay,
-    playPrev,
-    playNext,
-    playSong,
-    onSeek,
-    onVolumeChange,
-    toggleMute,
+    // browse
+    view, albums, playlists, isBrowseLoading,
+    detailInfo, isDetailLoading,
+    searchResults, isSearchLoading, searchQuery,
+    // navigation
+    openCollection, goHome, search, playSearchResults,
+    // player state
+    currentIndex, isPlaying, currentTime, duration,
+    volume, isMuted, song, songs,
+    seekPercent, volPercent,
+    // player controls
+    play, pause, togglePlay, playPrev, playNext,
+    playSong, playTrackFromList,
+    onSeek, onVolumeChange, toggleMute,
   }
 
   return (
     <PlayerContext.Provider value={value}>
-      {/* Hidden audio element — lives at the provider level */}
       <audio
         ref={audioRef}
         src={song.src}

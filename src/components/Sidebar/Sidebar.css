@@ -273,6 +273,13 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
+.sidebar__song-cover-skeleton {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
 .sidebar__song-item:hover .sidebar__song-cover {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
   transform: scale(1.06);
@@ -376,6 +383,21 @@
   50% {
     transform: scaleY(1);
   }
+}
+
+/* ---- Empty state ---- */
+.sidebar__empty-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2xl) var(--space-lg);
+  text-align: center;
+}
+
+.sidebar__empty-message p {
+  font-size: var(--font-sm);
+  color: var(--text-muted);
+  line-height: 1.5;
 }
 
 /* ---- Footer ---- */
