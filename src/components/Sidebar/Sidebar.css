@@ -1,5 +1,6 @@
 /* ============================================
    SIDEBAR — Component Styles
+   Polished with micro-animations & transitions
    ============================================ */
 
 .sidebar {
@@ -18,6 +19,19 @@
   z-index: 10;
   overflow: hidden;
   border-right: 1px solid var(--border);
+  /* Entrance animation */
+  animation: sidebarSlideIn 450ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes sidebarSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 /* ---- Logo ---- */
@@ -27,11 +41,16 @@
   gap: var(--space-md);
   padding: var(--space-lg) var(--space-xl);
   cursor: pointer;
-  transition: opacity var(--transition-base);
+  transition: opacity var(--transition-base), transform var(--transition-base);
 }
 
 .sidebar__logo:hover {
   opacity: 0.85;
+  transform: scale(0.98);
+}
+
+.sidebar__logo:active {
+  transform: scale(0.95);
 }
 
 .sidebar__logo-icon {
@@ -39,6 +58,11 @@
   height: 32px;
   border-radius: var(--radius-sm);
   object-fit: cover;
+  transition: transform var(--transition-spring);
+}
+
+.sidebar__logo:hover .sidebar__logo-icon {
+  transform: rotate(-6deg) scale(1.1);
 }
 
 .sidebar__logo h1 {
@@ -81,6 +105,7 @@
 .sidebar__nav-item:hover {
   color: var(--text-primary);
   background: var(--bg-hover);
+  padding-left: calc(var(--space-lg) + 3px);
 }
 
 .sidebar__nav-item:active {
@@ -121,11 +146,11 @@
 .sidebar__nav-icon {
   font-size: 1.4rem;
   flex-shrink: 0;
-  transition: transform var(--transition-fast);
+  transition: transform var(--transition-spring);
 }
 
 .sidebar__nav-item:hover .sidebar__nav-icon {
-  transform: scale(1.1);
+  transform: scale(1.15);
 }
 
 /* ---- Library ---- */
@@ -165,7 +190,7 @@
 
 .sidebar__library-icon {
   font-size: 1.5rem;
-  transition: transform var(--transition-base);
+  transition: transform var(--transition-spring);
 }
 
 .sidebar__library-header-left:hover .sidebar__library-icon {
@@ -181,13 +206,17 @@
   border-radius: 50%;
   color: var(--text-secondary);
   font-size: 1.1rem;
-  transition: all var(--transition-base);
+  transition: all var(--transition-spring);
 }
 
 .sidebar__library-add-btn:hover {
   color: var(--text-primary);
   background: var(--bg-hover);
-  transform: rotate(90deg);
+  transform: rotate(90deg) scale(1.1);
+}
+
+.sidebar__library-add-btn:active {
+  transform: rotate(90deg) scale(0.9);
 }
 
 /* ---- Song List ---- */
@@ -210,10 +239,20 @@
   transition: all var(--transition-base);
   position: relative;
   user-select: none;
+  /* Staggered entrance — via animation-delay set in JSX or nth-child */
+  animation: fadeInUp 350ms ease both;
 }
+
+.sidebar__song-item:nth-child(1) { animation-delay: 100ms; }
+.sidebar__song-item:nth-child(2) { animation-delay: 150ms; }
+.sidebar__song-item:nth-child(3) { animation-delay: 200ms; }
+.sidebar__song-item:nth-child(4) { animation-delay: 250ms; }
+.sidebar__song-item:nth-child(5) { animation-delay: 300ms; }
+.sidebar__song-item:nth-child(n+6) { animation-delay: 350ms; }
 
 .sidebar__song-item:hover {
   background: var(--bg-hover);
+  padding-left: calc(var(--space-md) + 2px);
 }
 
 .sidebar__song-item:active {
@@ -230,13 +269,13 @@
   border-radius: var(--radius-sm);
   object-fit: cover;
   flex-shrink: 0;
-  transition: all var(--transition-base);
+  transition: all var(--transition-spring);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .sidebar__song-item:hover .sidebar__song-cover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  transform: scale(1.06);
 }
 
 .sidebar__song-info {
@@ -255,7 +294,11 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  transition: color var(--transition-fast);
+  transition: color var(--transition-fast), transform var(--transition-fast);
+}
+
+.sidebar__song-item:hover .sidebar__song-title {
+  color: #fff;
 }
 
 .sidebar__song-title.active {
@@ -269,6 +312,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: color var(--transition-fast);
 }
 
 .sidebar__song-item:hover .sidebar__song-artist {
@@ -350,12 +394,13 @@
 .sidebar__footer-links a {
   font-size: var(--font-xs);
   color: var(--text-muted);
-  transition: color var(--transition-fast);
+  transition: color var(--transition-fast), transform var(--transition-fast);
   position: relative;
 }
 
 .sidebar__footer-links a:hover {
   color: var(--text-primary);
+  transform: translateY(-1px);
 }
 
 .sidebar__footer-links a::after {
@@ -371,4 +416,11 @@
 
 .sidebar__footer-links a:hover::after {
   width: 100%;
+}
+
+/* ---- Responsive — Hide sidebar on mobile ---- */
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
 }

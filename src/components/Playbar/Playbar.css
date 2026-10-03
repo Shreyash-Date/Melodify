@@ -1,5 +1,6 @@
 /* ============================================
    PLAYBAR — Fixed Bottom Audio Controls
+   Glass‑morphism bar with micro-animations
    ============================================ */
 
 .playbar {
@@ -8,13 +9,33 @@
   left: 0;
   right: 0;
   height: var(--playbar-height);
-  background: var(--bg-playbar);
-  border-top: 1px solid var(--border);
+  /* ---- Glass Effect ---- */
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.3);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.3);
+  border-top: 1px solid var(--glass-border);
+  /* Subtle top-edge highlight for depth */
+  box-shadow:
+    0 -1px 0 0 var(--glass-highlight),
+    0 -8px 32px rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 var(--space-xl);
   z-index: 100;
+  /* Entrance animation */
+  animation: playbarSlideUp 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes playbarSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ---- Song Info (Left) ---- */
@@ -24,6 +45,7 @@
   gap: var(--space-md);
   min-width: 200px;
   max-width: 280px;
+  animation: slideInRight 400ms ease 300ms both;
 }
 
 .playbar__song-thumb {
@@ -33,17 +55,24 @@
   background: var(--bg-active);
   flex-shrink: 0;
   overflow: hidden;
-  transition: transform var(--transition-base);
+  transition: transform var(--transition-spring), box-shadow var(--transition-base);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .playbar__song-thumb:hover {
-  transform: scale(1.05);
+  transform: scale(1.08) rotate(-1deg);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
 }
 
 .playbar__song-thumb img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.playbar__song-thumb:hover img {
+  transform: scale(1.1);
 }
 
 .playbar__song-details {
@@ -107,11 +136,17 @@
   color: var(--text-secondary);
   font-size: 1.1rem;
   transition: all var(--transition-fast);
+  position: relative;
 }
 
 .playbar__btn:hover {
   color: var(--text-primary);
-  transform: scale(1.1);
+  transform: scale(1.15);
+}
+
+.playbar__btn:active {
+  transform: scale(0.9);
+  transition-duration: 80ms;
 }
 
 .playbar__btn--play {
@@ -122,17 +157,20 @@
   color: var(--bg-darkest);
   font-size: 1rem;
   padding-left: 2px;
-  transition: all var(--transition-fast);
+  transition: all var(--transition-spring);
+  box-shadow: 0 2px 12px rgba(255, 255, 255, 0.15);
 }
 
 .playbar__btn--play:hover {
-  transform: scale(1.08);
+  transform: scale(1.12);
   background: var(--accent);
   color: var(--bg-darkest);
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.25);
 }
 
 .playbar__btn--play:active {
-  transform: scale(0.95);
+  transform: scale(0.92);
+  box-shadow: 0 1px 6px rgba(255, 255, 255, 0.1);
 }
 
 /* ---- Seekbar ---- */
@@ -154,6 +192,11 @@
   min-width: 35px;
   text-align: center;
   font-variant-numeric: tabular-nums;
+  transition: color var(--transition-fast);
+}
+
+.playbar:hover .playbar__time {
+  color: var(--text-secondary);
 }
 
 /* ---- Volume (Right) ---- */
@@ -163,13 +206,22 @@
   gap: var(--space-md);
   min-width: 160px;
   justify-content: flex-end;
+  animation: slideInRight 400ms ease 400ms both;
 }
 
 .playbar__volume-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color var(--transition-fast);
+  transition: color var(--transition-fast), transform var(--transition-fast);
+}
+
+.playbar__volume-btn:hover {
+  transform: scale(1.15);
+}
+
+.playbar__volume-btn:active {
+  transform: scale(0.9);
 }
 
 .playbar__volume-btn:hover .playbar__volume-icon {
@@ -238,10 +290,19 @@
 }
 
 /* ---- Responsive ---- */
-@media (max-width: 700px) {
+@media (max-width: 768px) {
+  .playbar {
+    padding: 0 var(--space-md);
+  }
+
   .playbar__song-info {
-    min-width: 120px;
-    max-width: 160px;
+    min-width: 100px;
+    max-width: 140px;
+  }
+
+  .playbar__song-thumb {
+    width: 40px;
+    height: 40px;
   }
 
   .playbar__volume {
@@ -249,6 +310,23 @@
   }
 
   .playbar__volume-slider {
+    display: none;
+  }
+
+  .playbar__btn--play {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .playbar__song-info {
+    min-width: 80px;
+    max-width: 110px;
+  }
+
+  .playbar__seekbar-container {
     display: none;
   }
 }

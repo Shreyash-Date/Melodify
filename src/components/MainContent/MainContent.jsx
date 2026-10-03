@@ -1,12 +1,37 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { IoPlay, IoPause } from 'react-icons/io5'
 import songs from '../../data/songs'
 import { usePlayer } from '../../context/PlayerContext'
 import './MainContent.css'
 
+/** Skeleton row used while content is "loading" */
+function SkeletonRow() {
+  return (
+    <div className="song-list__skeleton-row">
+      <span className="skeleton song-list__skeleton-num" />
+      <div className="song-list__skeleton-title-group">
+        <span className="skeleton song-list__skeleton-cover" />
+        <div className="song-list__skeleton-text-group">
+          <span className="skeleton song-list__skeleton-title" />
+          <span className="skeleton song-list__skeleton-artist" />
+        </div>
+      </div>
+      <span className="skeleton song-list__skeleton-album" />
+      <span className="skeleton song-list__skeleton-duration" />
+    </div>
+  )
+}
+
 function MainContent() {
   const [hoveredSong, setHoveredSong] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
   const { currentIndex, isPlaying, playSong, play } = usePlayer()
+
+  // Simulate brief loading state for polish
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800)
+    return () => clearTimeout(timer)
+  }, [])
 
   const totalDuration = songs.reduce((acc, song) => {
     const [min, sec] = song.duration.split(':').map(Number)
@@ -116,77 +141,85 @@ function MainContent() {
 
           <div className="song-list__divider" />
 
-          {/* Song rows */}
-          {songs.map((song, index) => {
-            const isActive = currentIndex === index
-            const isActiveAndPlaying = isActive && isPlaying
-            const isHovered = hoveredSong === song.id
+          {/* Song rows — or skeleton while loading */}
+          {isLoading ? (
+            <>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <SkeletonRow key={i} />
+              ))}
+            </>
+          ) : (
+            songs.map((song, index) => {
+              const isActive = currentIndex === index
+              const isActiveAndPlaying = isActive && isPlaying
+              const isHovered = hoveredSong === song.id
 
-            return (
-              <div
-                key={song.id}
-                className={[
-                  'song-list__row',
-                  isHovered ? 'song-list__row--hovered' : '',
-                  isActive ? 'song-list__row--active' : '',
-                ].join(' ')}
-                onMouseEnter={() => setHoveredSong(song.id)}
-                onMouseLeave={() => setHoveredSong(null)}
-                onClick={() => playSong(index)}
-              >
-                {/* Row number / play indicator */}
-                <span className="song-list__col song-list__col--num">
-                  {isHovered ? (
-                    isActiveAndPlaying ? (
-                      <IoPause className="song-list__play-icon" />
-                    ) : (
-                      <IoPlay className="song-list__play-icon" />
-                    )
-                  ) : isActiveAndPlaying ? (
-                    <span className="song-list__equalizer" aria-label="Now playing">
-                      <span className="song-list__eq-bar" />
-                      <span className="song-list__eq-bar" />
-                      <span className="song-list__eq-bar" />
-                    </span>
-                  ) : (
-                    <span className={`song-list__row-number ${isActive ? 'song-list__row-number--active' : ''}`}>
-                      {index + 1}
-                    </span>
-                  )}
-                </span>
-
-                {/* Cover + Title + Artist */}
-                <div className="song-list__col song-list__col--title">
-                  <div className="song-list__cover">
-                    <img src={song.cover} alt={song.title} />
-                    <div className="song-list__cover-overlay">
-                      {isActiveAndPlaying ? (
-                        <IoPause size={18} />
+              return (
+                <div
+                  key={song.id}
+                  className={[
+                    'song-list__row',
+                    isHovered ? 'song-list__row--hovered' : '',
+                    isActive ? 'song-list__row--active' : '',
+                  ].join(' ')}
+                  onMouseEnter={() => setHoveredSong(song.id)}
+                  onMouseLeave={() => setHoveredSong(null)}
+                  onClick={() => playSong(index)}
+                >
+                  {/* Row number / play indicator */}
+                  <span className="song-list__col song-list__col--num">
+                    {isHovered ? (
+                      isActiveAndPlaying ? (
+                        <IoPause className="song-list__play-icon" />
                       ) : (
-                        <IoPlay size={18} />
-                      )}
+                        <IoPlay className="song-list__play-icon" />
+                      )
+                    ) : isActiveAndPlaying ? (
+                      <span className="song-list__equalizer" aria-label="Now playing">
+                        <span className="song-list__eq-bar" />
+                        <span className="song-list__eq-bar" />
+                        <span className="song-list__eq-bar" />
+                      </span>
+                    ) : (
+                      <span className={`song-list__row-number ${isActive ? 'song-list__row-number--active' : ''}`}>
+                        {index + 1}
+                      </span>
+                    )}
+                  </span>
+
+                  {/* Cover + Title + Artist */}
+                  <div className="song-list__col song-list__col--title">
+                    <div className="song-list__cover">
+                      <img src={song.cover} alt={song.title} />
+                      <div className="song-list__cover-overlay">
+                        {isActiveAndPlaying ? (
+                          <IoPause size={18} />
+                        ) : (
+                          <IoPlay size={18} />
+                        )}
+                      </div>
+                    </div>
+                    <div className="song-list__info">
+                      <span className={`song-list__song-title ${isActive ? 'song-list__song-title--active' : ''}`}>
+                        {song.title}
+                      </span>
+                      <span className="song-list__artist">{song.artist}</span>
                     </div>
                   </div>
-                  <div className="song-list__info">
-                    <span className={`song-list__song-title ${isActive ? 'song-list__song-title--active' : ''}`}>
-                      {song.title}
-                    </span>
-                    <span className="song-list__artist">{song.artist}</span>
-                  </div>
+
+                  {/* Album (uses title as placeholder) */}
+                  <span className="song-list__col song-list__col--album">
+                    {song.title} — Single
+                  </span>
+
+                  {/* Duration */}
+                  <span className="song-list__col song-list__col--duration">
+                    {song.duration}
+                  </span>
                 </div>
-
-                {/* Album (uses title as placeholder) */}
-                <span className="song-list__col song-list__col--album">
-                  {song.title} — Single
-                </span>
-
-                {/* Duration */}
-                <span className="song-list__col song-list__col--duration">
-                  {song.duration}
-                </span>
-              </div>
-            )
-          })}
+              )
+            })
+          )}
         </section>
 
         {/* Bottom spacer so last row isn't hidden by playbar */}

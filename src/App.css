@@ -1,4 +1,5 @@
 .app {
   min-height: 100vh;
   background: var(--bg-darkest);
+  animation: fadeIn 400ms ease;
 }
